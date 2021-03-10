@@ -1,0 +1,15 @@
+{% extends "./layout.html" %}
+{% block body %}
+    <h2>{{ city.name }}</h2>
+    <ul>
+        <li>Zip Code: {{ city.zip_code }}</li>
+        <li>Dogs: 
+            <ul>
+                {% for dog in dogs %}
+                    <li>{{ dog }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+{% endblock %}

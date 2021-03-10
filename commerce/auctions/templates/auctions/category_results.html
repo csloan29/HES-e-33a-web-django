@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listings In: {{category.name}}</h2>
+
+    {% if listings %}
+        {% include "./listings_card_view.html" %}
+    {% else %}
+        <p>No items associated with this category.</p>
+    {% endif %}
+
+{% endblock %}

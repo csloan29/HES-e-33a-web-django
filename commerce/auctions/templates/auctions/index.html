@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    {% if listings %}
+        {% include "./listings_card_view.html" %}
+    {% else %}
+        <p>No active listings</p>
+    {% endif %}
+
+{% endblock %}

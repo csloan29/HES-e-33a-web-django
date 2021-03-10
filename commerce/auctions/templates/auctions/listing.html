@@ -1,0 +1,87 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% include "./listing_banner.html" %}
+    <div class="row">
+        <div class="col-6">
+            {% if listing.image_url %}
+                <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
+            {% else %}
+                <img class="card-img-top" src="https://propertywiselaunceston.com.au/wp-content/themes/property-wise/images/no-image@2x.png" alt="Card image cap">
+            {% endif %}
+        </div>
+        <div class="col-6">
+            <div class="d-flex justify-content-between">
+                <h2>{{ listing.title }}</h2>
+                {% if user.is_authenticated %}
+                    <form  action="{% url 'auctions:toggle_watchlist' %}" method="POST" class="d-inline-flex">
+                        {% csrf_token %}
+                        <input type="text" hidden name="username" value="{{user.username}}">
+                        <input type="text" hidden name="listing_id" value="{{listing.id}}">
+                        {% if listing in watchedItems %}
+                            <button type="submit" class="btn btn-success" action="">In Watchlist</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-default" action="">Add To Watchlist</button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            </div>
+
+            <div class="d-inline-flex mt-2">
+                <h5>${{ current_price }}</h5>
+                {% if listing.active %}
+                    {% if user_highest_bid %}
+                        <p class=" ml-4 listing-highest-bid">You are currently the highest bidder</p>
+                    {% endif %}
+                {% else %}
+                    <p class=" ml-4 listing-sold">SOLD</p>
+                {% endif %}
+            </div>
+
+            <hr class="mt-5">
+            <h5>Category: </h5>
+            {% if category %}
+                <a href="{% url 'auctions:category' name=category.name %}" class="btn btn-default">{{ category.name }}</a>
+            {% else %}
+                <p>None</p>
+            {% endif %}
+
+            <hr class="mt-5">
+            <h5>Description: </h5>
+            <p class="mt-1">{{ listing.description }}</p>
+
+            <hr class="mt-5">
+            <h5>Bid History: </h5>
+            {% for bid in bids %}
+                <p>{{bid.bidder}}: ${{ bid.amount }} </p>
+            {% endfor %}
+            <!-- Bids only allowed from signed in users that do not own the listing and only if the listing is active -->
+            {% if user.is_authenticated and not user_owned and listing.active %}
+                <form  action="{% url 'auctions:bid_on_listing' %}" method="POST" class="mt-4">
+                    {% csrf_token %}
+                    <input type="text" hidden name="username" value="{{user.username}}">
+                    <input type="text" hidden name="listing_id" value="{{listing.id}}">
+                    <input type="number" class="form-control" id="bid_field" name="new_bid" placeholder="New Bid" min="{{minimum_bid}}" step="0.01">
+                    <button type="submit" class="btn btn-primary mt-2" action="">Submit Bid</button>
+                </form>
+            {% endif %}
+
+            <hr class="mt-5">
+            <h5>Comments: </h5>
+            {% for comment in comments %}
+                <p>{{comment.commenter}}: {{ comment.text }} </p>
+            {% endfor %}
+            <!-- Comments are still allowed even if the listing is closed. Maybe for reviews or post-sale communication -->
+            {% if user.is_authenticated %}
+                <form  action="{% url 'auctions:comment_on_listing' %}" method="POST" class="mt-4">
+                    {% csrf_token %}
+                    <input type="text" hidden name="username" value="{{user.username}}">
+                    <input type="text" hidden name="listing_id" value="{{listing.id}}">
+                    <input type="text" class="form-control" id="comment-field" name="new_comment" placeholder="New Comment">
+                    <button type="submit" class="btn btn-primary mt-2" action="">Comment</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

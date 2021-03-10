@@ -1,0 +1,25 @@
+{% extends "./layout.html" %}
+{% block body %}
+    <ul>
+        <li><a href="{% url 'newdog' %}">Add a Dog</a></li>
+        <li><a href="{% url 'newcity' %}">Add a City</a></li>
+    </ul>
+    <h2>Doggos:</h2>
+    <ul>
+        {% for dog in dogs %}
+            <li><a href="{% url 'dog' dog.id %}">{{ dog }}</a></li>
+        {% endfor %}
+    </ul>
+    <h2>People:</h2>
+    <ul>
+        {% for person in people %}
+            <li><a href="{% url 'person' person.username %}">{{ person }}</a></li>
+        {% endfor %}
+    </ul>
+    <h2>Cities:</h2>
+    <ul>
+        {% for city in cities %}
+            <li><a href="{% url 'city' city.id %}">{{ city }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<title>Search</title>
+
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<link rel="icon" type="image/png" href="./resources/new-google-favicon-512.png">
+		<link rel="stylesheet" href="./styles/main.css">
+	</head>
+	<body>
+		<div class="menu-nav">
+			<a class="nav-item" href="./index.html">Back to Google</a>
+		</div>
+		<div class="advanced-header-bar">
+			<span class="advanced-header">Advanced Search</span>
+		</div>
+		<div class="advanced-title">
+			<p>Find pages with...</p>
+		</div>
+		<form action="https://google.com/search">
+			<div class="advanced-container">
+				<div class="adv-input-container">
+					<div class="adv-input-row">
+						<label for="all-words">all these words</label>
+						<input class="adv-input" type="text" title="all-words" name="as_q">
+					</div>
+
+					<div class="adv-input-row">
+						<label for="exact-word-phrase">this exact word or phrase</label>
+						<input class="adv-input" type="text" title="exact-word-phrase" name="as_epq">
+					</div>
+
+					<div class="adv-input-row">
+						<label for="any-words">any of these words</label>
+						<input class="adv-input" type="text" title="any-words" name="as_oq">
+					</div>
+
+					<div class="adv-input-row">
+						<label for="none-words">none of these words</label>
+						<input class="adv-input" type="text" title="none-words" name="as_eq">
+					</div>
+				</div>
+				<div class="adv-button-row">
+					<input class="adv-button" type="submit" name="search_submit" value="Advanced Search">
+				</div>
+			</div>
+		</form>
+	</body>
+</html>
+
+<!-- all, exact, any, none, nums from 1 to 10 -->
+<!-- as_q=all&as_epq=exact&as_oq=any&as_eq=none&as_nlo=1&as_nhi=10 -->

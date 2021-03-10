@@ -1,0 +1,31 @@
+{% if listing.active %}
+    {% if user_owned %}
+        <div class="py-5 px-2 my-2 banner-success">
+            <h5>Your listing is currently active and accepting bids.</h5>
+            <p>Would you like to close this auction bidding and award the highest bidder this item?</p>
+            <form  action="{% url 'auctions:close_listing' %}" method="POST" class="d-inline-flex">
+                {% csrf_token %}
+                <input type="text" hidden name="username" value="{{user.username}}">
+                <input type="text" hidden name="listing_id" value="{{listing.id}}">
+                <button type="submit" class="btn btn-danger" action="">Close Auction</button>
+            </form>
+        </div>
+    {% endif %}
+{% else %}
+    {% if user_owned %}
+        <div class="py-5 px-2 my-2 banner-danger">
+            <h5>Your listing is now closed.</h5>
+        </div>
+    {% else %}
+        {% if user_highest_bid %}
+            <div class="py-5 px-2 my-2 banner-success">
+                <h5>Congratulations! This listing has closed and you were the highest bidder.</h5>
+            </div>
+        {% else %}
+            <div class="py-5 px-2 my-2 banner-danger">
+                <h5>This listing is closed and bids are no longer allowed.</h5>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endif %}
+

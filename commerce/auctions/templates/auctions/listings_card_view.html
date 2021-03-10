@@ -1,0 +1,19 @@
+<div class="card-columns">
+    {% for listing in listings %}
+        <a href="{% url 'auctions:listing' listing_id=listing.id %}">
+            <div class="card">
+                {% if listing.image_url %}
+                    <img class="card-img-top" src="{{ listing.image_url }}" alt="Card image cap">
+                {% else %}
+                    <img class="card-img-top" src="https://propertywiselaunceston.com.au/wp-content/themes/property-wise/images/no-image@2x.png" alt="Card image cap">
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title">{{ listing.title }}</h3>
+                    <p class="card-text">{{ listing.description }}</p>
+                    <h5 class="card-title">${{ listing.price }}</h5>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+

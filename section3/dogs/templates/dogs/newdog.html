@@ -1,0 +1,11 @@
+{% extends "./layout.html" %}
+{% block body %}
+
+    <h2>New Dog</h2>
+    <form action="{% url 'newdog' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Add Dog">
+    </form>
+
+{% endblock %}

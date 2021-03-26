@@ -1,0 +1,8 @@
+{
+	"python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.7/bin/python3.7",
+	"python.linting.enabled": true,
+    "python.linting.pylintArgs": [
+        "--load-plugins=pylint_django",
+        "--django-settings-module=mail.settings"
+    ]
+}

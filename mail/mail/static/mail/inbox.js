@@ -48,7 +48,6 @@ function compose_email(email, fromSent) {
 }
 
 function load_mailbox(mailbox) {
-
     // Show the mailbox name (this also acts as a way to clear out old data)
     const title = document.querySelector('#mailbox-view');
     title.innerHTML = `<h3 class="mb-3">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`; //todo: 2.3: already done

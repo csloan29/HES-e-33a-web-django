@@ -1,0 +1,65 @@
+/* ---------------------------------------------------
+    SITE-WIDE
+----------------------------------------------------- */
+html, body {
+    height: 100%;
+}
+
+video {
+    max-width: 100%;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR
+----------------------------------------------------- */
+#sidebar {
+  min-width: 230px;
+  max-width: 230px;
+  height: 100%;
+  transition: all 0.3s;
+  position: fixed;
+  z-index: 1;
+}
+
+#sidebar .nav-item {
+    padding: 20px;
+}
+
+#sidebar.inactive {
+  margin-left: -230px;
+}
+
+#sidebar .sidebar-header {
+  padding: 20px;
+}
+
+.sidebar-hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(255,255,255);
+}
+
+/* MEDIAQUERIES */
+
+@media (max-width: 768px) {
+  #sidebar {
+    margin-left: -230px;
+  }
+  #sidebar.active {
+    margin-left: 0;
+  }
+  #sidebar-btn span {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------
+    Video Search Result
+----------------------------------------------------- */
+
+.card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+}
+

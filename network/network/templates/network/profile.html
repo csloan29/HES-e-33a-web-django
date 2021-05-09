@@ -1,0 +1,86 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div id="profile-container" class="container mb-5">
+        <div class="row mt-5">
+            <div class="col-6">
+                <h1>{{ username }}</h1>
+            </div>
+            <div class="col-6 d-flex align-items-center justify-content-end">
+                {% if user.id != profile_id %}
+                    {% if profile_id in user_followed_user_ids %}
+                        <button id="follow-btn" class="btn btn-outline-danger" onclick="toggleFollow('{{profile_id}}')">
+                            <i id="follow-btn-icon" class="bi bi-check"></i>
+                            <span id="follow-btn-text">
+                                Following
+                            </span>
+                        </button>
+                    {% else %}
+                        <button id="follow-btn" class="btn btn-outline-secondary" onclick="toggleFollow('{{profile_id}}')">
+                            <i id="follow-btn-icon" class="bi bi-plus"></i>
+                            <span id="follow-btn-text">
+                                Follow
+                            </span>
+                        </button>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="row w-50">
+            <div class="col-4">
+                {{ post_count }}
+                {% if post_count == 1 %}
+                    post
+                {% else %}
+                    posts
+                {% endif %}
+            </div>
+            <div class="col-4">
+                {{ follower_count }}
+                {% if follower_count == 1 %}
+                    follower
+                {% else %}
+                    followers
+                {% endif %}
+            </div>
+            <div class="col-4">
+                {{ follow_count }} following
+            </div>
+        </div>
+        {% if user.is_authenticated and user.id == profile_id %}
+            <h6 class="mt-5">New Post</h6>
+            <form action="{% url 'posts' page=1 %}" method="POST">
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ new_post_form }}
+                    <input type="text" name="context_path" value="{{ request.path }}" hidden>
+                    <input type="submit" class="btn btn-primary mt-2" value="Post"/>
+                </div>
+            </form>
+        {% endif %}
+        {% if user.id == profile_id %}
+            <h2 class="mt-5">Your Posts</h2>
+        {% else %}
+            <h2 class="mt-5">{{ username }}'s Posts</h2>
+        {% endif %}
+        {% include "./post-list.html" %}
+        <!-- Only show pagination controls if there is more than 1 page available -->
+        {% if page_count > 1 %}
+            <nav class="d-flex justify-content-center mt-4">
+                <ul class="pagination">
+                    {% if page_num != 1 %}
+                        <li class="page-item"><a class="page-link" href="{% url 'profile' username=username page=page_num|add:'-1' %}">Previous</a></li>
+                    {% endif %}
+                    {% for page in page_range %}
+                        <li class="page-item"><a class="page-link" href="{% url 'profile' username=username page=page %}">{{ page }}</a></li>
+                    {% endfor %}
+                    {% if page_num != page_count %}
+                        <li class="page-item"><a class="page-link" href="{% url 'profile' username=username page=page_num|add:'1' %}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+    {{ user_id|json_script:"profile_id" }}
+{% endblock %}

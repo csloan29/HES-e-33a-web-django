@@ -1,0 +1,112 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Metadata -->
+        <title>{% block title %}The Watch{% endblock %}</title>
+        <link rel="icon" href="../../static/the_watch/assets/w-icon.ico">
+        <!-- jQuery -->
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <!-- Bootstrap Icons -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+        <!-- Local Styles -->
+        <link href="{% static 'the_watch/styles.css' %}" rel="stylesheet">
+        <!-- Local JavaScript -->
+        <script src="{% static 'the_watch/index.js' %}"></script>
+    </head>
+    <body>
+
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark mb-0">
+            <button id="sidebar-btn" class="btn btn-secondary mr-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+            </button>
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <img src="../../static/the_watch/assets/w-icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
+                The Watch
+            </a>
+
+            <form class="form-inline w-50 mx-auto" id="searchbar-form" action="{% url 'search' %}" method="POST">
+                {% csrf_token %}
+                <div class="input-group w-100">
+                    <div class="input-group-prepend" id="searchbar-btn">
+                        <button type="submit" class="btn btn-secondary input-group-text">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                    <input id="searchbar-bar" type="text" class="form-control" placeholder="Search" aria-label="Search" name="query">
+                </div>
+            </form>
+
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="rgba(255,255,255,.5)" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+                            <a class="dropdown-item" href="{% url 'account' user_id=user.id %}">My Account</a>
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'new_video' %}">
+                                <i class="bi bi-plus"></i>
+                                New Video
+                            </a>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+
+        <nav id="sidebar" class="navbar-nav navbar-dark bg-dark overflow-auto inactive">
+            <ul class="navbar-nav mt-3">
+                <div class="row">
+                    <div class="col-4 p-0">
+
+                    </div>
+                    <div class="col-8 p-0">
+                        <li class="nav-item p-1">
+                            <a class="nav-link" href="{% url 'index' %}">Home</a>
+                        </li>
+                    </div>
+                </div>
+            </ul>
+            <ul class="navbar-nav">
+                {% for playlist in playlists %}
+                <div class="row">
+                    <div class="col-4 p-0">
+
+                    </div>
+                    <div class="col-8 p-0">
+                        <li class="nav-item p-1">
+                            <a class="nav-link" href="{% url 'playlist' playlist_id=playlist.id %}">{{ playlist.title }}</a>
+                        </li>
+                    </div>
+                </div>
+                {% endfor %}
+            </ul>
+        </nav>
+
+        <div class="body">
+            {% block body %}
+            {% endblock %}
+        </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col">
+        {% for video in videos %}
+            <div class="card my-3">
+                <div class="card-horizontal">
+                    <div class="img-square-wrapper">
+                        <iframe src="{{ video.path }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title mb-1">{{ video.title }}</h4>
+                        <a href="{% url 'account' user_id=video.user.id %}">
+                            <p class="card-text">{{ video.user.username }}</p>
+                        </a>
+                        <p class="card-text mt-4">{{ video.description }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

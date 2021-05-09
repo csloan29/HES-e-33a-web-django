@@ -1,0 +1,12 @@
+{% extends "the_watch/layout.html" %}
+
+{% block body %}
+    <div class="container py-5 mt-5">
+            {% if videos %}
+                <h2>{{playlist.title}}</h2>
+                {% include "./components/result-list.html" %}
+            {% else %}
+                <h3 class="text-center">No Videos in Playlist</h3>
+            {% endif %}
+    </div>
+{% endblock %}

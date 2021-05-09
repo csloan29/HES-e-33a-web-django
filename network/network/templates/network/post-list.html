@@ -1,0 +1,59 @@
+<div class="row">
+    <div class="col">
+        {% for post in posts %}
+        <div class="card mt-1">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <span id="post-card-header-{{post.id}}">
+                            <a class="mb-2" href="{% url 'profile' username=post.poster page=1 %}"><h4>{{ post.poster }}</h4></a>
+                        </span>
+                        <div id="post-content-{{post.id}}">
+                            <div id="post-text-{{post.id}}" class="mb-2">{{ post.text }}</div>
+                            <div class="mb-4 grey-text timestamp-size">{{ post.timestamp }}</div>
+                        </div>
+                        <div id="post-btn-row-{{ post.id }}" class="d-flex">
+                            {% if user.id in post.likes %}
+                                <button id="like-btn-{{post.id}}" class="btn btn-outline-danger" onclick="toggleLike('{{post.id}}')">
+                                    <i id="like-btn-icon-{{post.id}}" class="bi bi-heart-fill"></i>
+                                    <span id="like-btn-text-{{post.id}}">
+                                        {{ post.likes|length }}
+                                        {% if post.likes|length == 1 %}
+                                            like
+                                        {% else %}
+                                            likes
+                                        {% endif %}
+                                    </span>
+                                </button>
+                            {% else %}
+                                <button id="like-btn-{{ post.id }}" class="btn btn-outline-secondary" onclick="toggleLike('{{post.id}}')">
+                                    <i id="like-btn-icon-{{ post.id }}" class="bi bi-heart"></i>
+                                    <span id="like-btn-text-{{ post.id }}">
+                                        {{ post.likes|length }}
+                                        {% if post.likes|length == 1 %}
+                                            like
+                                        {% else %}
+                                            likes
+                                        {% endif %}
+                                    </span>
+                                </button>
+                            {% endif %}
+
+                            {% if user.id == post.poster_id %}
+                                <button id="edit-btn-{{ post.id }}" class="btn btn-link" onclick="editPost('{{ post.id }}')">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Edit
+                                </button>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% if not posts %}
+            <h6 class="mt-4 grey-text">There are no posts yet.</h6>
+        {% endif %}
+    </div>
+</div>

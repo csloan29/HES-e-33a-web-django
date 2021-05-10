@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Video
+from .models import Video, Playlist
 
 
 class VideoForm(ModelForm):
@@ -25,6 +25,20 @@ class VideoForm(ModelForm):
             "description": forms.Textarea(
                 attrs={
                     "class": "form-control mb-3"
+                }
+            )
+        }
+
+
+class PlaylistForm(ModelForm):
+
+    class Meta:
+        model = Playlist
+        fields = ["title"]
+        widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control mb-3",
                 }
             )
         }

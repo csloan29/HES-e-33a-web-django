@@ -14,8 +14,11 @@ urlpatterns = [
     path("playlist/<int:playlist_id>", views.playlist, name="playlist"),
     path("search/", views.search, name="search"),
     path("new-video", views.new_video, name="new_video"),
+    path("new-playlist", views.new_playlist, name="new_playlist"),
+    path("add-to-playlist/<int:playlist_id>/<int:video_id>",
+         views.add_to_playlist, name="add_to_playlist"),
+    path("add-comment", views.add_comment, name="add_comment"),
 
     # API Routes
-    path("toggle-like", views.toggle_like, name="toggle_like"),
-    path("add-comment", views.add_comment, name="add_comment"),
+    path("toggle-like/<int:video_id>", views.toggle_like, name="toggle_like"),
 ]

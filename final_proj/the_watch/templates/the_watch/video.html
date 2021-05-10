@@ -1,5 +1,105 @@
 {% extends "the_watch/layout.html" %}
 
 {% block body %}
-    video page
+    <div class="container my-5 pt-3">
+
+        <div id="playlist-alert" class="alert alert-dark alert-dismissible fade" role="alert">
+            <span id="video-alert-text">Fill Text</span>
+        </div>
+
+        <div class="row">
+            <div class="col-9">
+                <div class="row">
+                    <div class="col">
+                        <iframe src="{{ video.path }}" class="w-100 h-100" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <div class="row mt-3">
+                            <div class="col-8">
+                                <h3>{{ video.title }}</h3>
+                            </div>
+                            {% if user.is_authenticated %}
+                                <div class="col-2">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownPlaylistBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                              </svg>
+                                            <span id="like-btn-text">Playlist</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownPlaylistBtn">
+                                            {% for playlist in playlists %}
+                                                <button class="dropdown-item" type="button" onclick="addToPlaylist('{{ playlist.id }}')">{{ playlist.title }}</button>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    {% if liked %}
+                                        <button id="like-btn" type="submit" class="btn btn-danger">
+                                            <span class="d-inline-flex">
+                                                <i class="bi bi-heart-fill mr-2"></i>
+                                                <span id="like-btn-text">Liked</span>
+                                            </span>
+                                        </button>
+                                    {% else %}
+                                        <button id="like-btn" type="submit" class="btn btn-primary">
+                                            <span class="d-inline-flex">
+                                                <i id="like-btn-icon" class="bi bi-heart mr-2"></i>
+                                                <span id="like-btn-text">Like</span>
+                                            </span>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <p class="mt-3">{{ video.description }}</p>
+
+                        <h5 class="mt-5">Comments: </h5>
+                        <!-- Comments only allowed if user is authenticated -->
+                        {% if user.is_authenticated %}
+                            <form  action="{% url 'add_comment' %}" method="POST" class="mt-4">
+                                {% csrf_token %}
+                                <input type="text" hidden name="user_id" value="{{user.id}}">
+                                <input type="text" hidden name="video_id" value="{{video.id}}">
+                                <input type="text" class="form-control" id="comment-field" name="comment_text" placeholder="New Comment">
+                                <button type="submit" class="btn btn-primary mt-2" action="">Comment</button>
+                            </form>
+                        {% endif %}
+                        <div class="mt-4 pb-5">
+                            {% for comment in comments %}
+                                <p class="mt-2">{{comment.user.username}}: {{ comment.text }} </p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <h5>Suggested Videos</h5>
+                <div class="row">
+                    <div class="col">
+                        {% for video in videos %}
+                            <div class="card my-3 mr-3">
+                                <iframe src="{{ video.path }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <div class="card-body">
+                                    <a href="{% url 'video' video_id=video.id %}">
+                                        <h6 class="card-title mb-1">{{ video.title }}</h6>
+                                    </a>
+                                    <a href="{% url 'account' user_id=video.user.id %}">
+                                        <p class="card-text">{{ video.user.username }}</p>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block footer_scripts %}
+        <script type="text/javascript">
+            var video_id_js = "{{ video.id }}";
+        </script>
+    {% endblock footer_scripts %}
+
 {% endblock %}
+

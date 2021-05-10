@@ -1,16 +1,17 @@
 import os
-from wsgiref.util import FileWrapper
 
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
 
 from .models import User, Video, Playlist, Comment
-from .forms import VideoForm
+from .forms import VideoForm, PlaylistForm
 
 
 def index(request):
@@ -103,8 +104,10 @@ def video(request, video_id):
         playlists = Playlist.objects.filter(user=user)
     return render(request, "the_watch/video.html", {
         "video": view_video,
+        "comments": view_video.video_comments.all(),
         "videos": suggested_videos,
-        "playlists": playlists
+        "playlists": playlists,
+        "liked": (user in view_video.likes.all()),
     })
 
 
@@ -114,10 +117,12 @@ def new_video(request):
         video_obj = VideoForm(request.POST)
         if video_obj.is_valid():
             video_obj = video_obj.save(commit=False)
-            user = User.objects.get(username=request.user)
-            video_obj.owner = user
+            user_obj = User.objects.get(username=request.user)
+            video_obj.user = user_obj
             video_obj.save()
-            return index(request)
+            return HttpResponseRedirect(
+                reverse("video",
+                        kwargs={"video_id": video_obj.id}))
         return HttpResponseRedirect(reverse("new_video"))
     # get method for new video
     user = User.objects.filter(username=request.user).first()
@@ -137,6 +142,29 @@ def playlist(request, playlist_id):
     return render(request, "the_watch/playlist.html", {
         "playlist": playlist_obj,
         "videos": playlist_obj.videos.all(),
+        "playlists": playlists,
+    })
+
+
+@login_required
+def new_playlist(request):
+    if request.method == "POST":
+        playlist_obj = PlaylistForm(request.POST)
+        if playlist_obj.is_valid():
+            playlist_obj = playlist_obj.save(commit=False)
+            user_obj = User.objects.get(username=request.user)
+            playlist_obj.user = user_obj
+            playlist_obj.save()
+            return HttpResponseRedirect(
+                reverse("playlist",
+                        kwargs={"playlist_id": playlist_obj.id}))
+        return HttpResponseRedirect(reverse("new_playlist"))
+    # get method for new playlist
+    user = User.objects.filter(username=request.user).first()
+    playlists = Playlist.objects.filter(user=user)
+    form = PlaylistForm()
+    return render(request, "the_watch/new-playlist.html", {
+        "newPlaylistForm": form,
         "playlists": playlists,
     })
 
@@ -162,18 +190,64 @@ def search(request):
     })
 
 
-# API Routes
-@login_required
-def toggle_like(request):
-    pass
-
-
-@login_required
+@ login_required
 def add_comment(request):
-    pass
+    if request.method == "POST":
+        user_obj = User.objects.filter(id=request.POST["user_id"]).first()
+        video_obj = Video.objects.filter(id=request.POST["video_id"]).first()
+        comment_text = request.POST["comment_text"]
+        comment_obj = Comment(
+            user=user_obj, text=comment_text, video=video_obj)
+        comment_obj.save()
+        return HttpResponseRedirect(
+            reverse("video",
+                    kwargs={"video_id": request.POST["video_id"]}))
+    return HttpResponseRedirect(reverse("auctions:index"))
 
 
-def get_video_from_storage(file_name):
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath("__file__")))
-    file = FileWrapper(open(base_dir+'/'+file_name, 'rb'))
-    return file
+# API Routes
+@ login_required
+@ csrf_exempt
+def toggle_like(request, video_id):
+    if request.method == "POST":
+        user_obj = User.objects.filter(username=request.user).first()
+        video_obj = Video.objects.filter(id=video_id).first()
+        if user_obj in video_obj.likes.all():
+            video_obj.likes.remove(user_obj)
+            status = "Unliked"
+        else:
+            video_obj.likes.add(user_obj)
+            status = "Liked"
+        return JsonResponse(
+            {
+                "message": "toggle like successful",
+                "status": status
+            }, status=201)
+    return JsonResponse(
+        {
+            "message": "toggle like endpoint only accepts post requests",
+        }, status=400)
+
+
+@login_required
+@ csrf_exempt
+def add_to_playlist(request, playlist_id, video_id):
+    if request.method == "POST":
+        playlist_obj = Playlist.objects.filter(id=playlist_id).first()
+        video_obj = Video.objects.filter(id=video_id).first()
+        # cannot add video to playlist twice
+        if video_obj not in playlist_obj.videos.all():
+            playlist_obj.videos.add(video_obj)
+            print("added video to playlist!")
+            return JsonResponse(
+                {
+                    "message": "Video added successfully to playlist",
+                }, status=201)
+        return JsonResponse(
+            {
+                "message": "Video already in playlist",
+            }, status=200)
+    return JsonResponse(
+        {
+            "message": "Add to playlist endpoint only accepts post requests",
+        }, status=400)

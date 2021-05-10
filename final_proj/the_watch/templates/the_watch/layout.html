@@ -76,30 +76,45 @@
 
         <nav id="sidebar" class="navbar-nav navbar-dark bg-dark overflow-auto inactive">
             <ul class="navbar-nav mt-3">
-                <div class="row">
-                    <div class="col-4 p-0">
-
+                <li class="nav-item ml-5">
+                    <div class="d-inline-flex">
+                        <div class="align-self-center mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="rgba(255,255,255,.5)" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+                            </svg>
+                        </div>
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
                     </div>
-                    <div class="col-8 p-0">
-                        <li class="nav-item p-1">
-                            <a class="nav-link" href="{% url 'index' %}">Home</a>
-                        </li>
-                    </div>
-                </div>
+                </li>
             </ul>
             <ul class="navbar-nav">
-                {% for playlist in playlists %}
-                <div class="row">
-                    <div class="col-4 p-0">
-
-                    </div>
-                    <div class="col-8 p-0">
-                        <li class="nav-item p-1">
+                {% if user.is_authenticated %}
+                    {% for playlist in playlists %}
+                    <li class="nav-item ml-5">
+                        <div class="d-inline-flex">
+                            <div class="align-self-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="rgba(255,255,255,.5)" class="bi bi-music-note-list" viewBox="0 0 16 16">
+                                    <path d="M12 13c0 1.105-1.12 2-2.5 2S7 14.105 7 13s1.12-2 2.5-2 2.5.895 2.5 2z"/>
+                                    <path fill-rule="evenodd" d="M12 3v10h-1V3h1z"/>
+                                    <path d="M11 2.82a1 1 0 0 1 .804-.98l3-.6A1 1 0 0 1 16 2.22V4l-5 1V2.82z"/>
+                                    <path fill-rule="evenodd" d="M0 11.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 .5 7H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 .5 3H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5z"/>
+                                </svg>
+                            </div>
                             <a class="nav-link" href="{% url 'playlist' playlist_id=playlist.id %}">{{ playlist.title }}</a>
-                        </li>
-                    </div>
-                </div>
-                {% endfor %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                    <li class="nav-item ml-5">
+                        <div class="d-inline-flex">
+                            <div class="align-self-center mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="rgba(255,255,255,.5" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                </svg>
+                            </div>
+                            <a class="nav-link" href="{% url 'new_playlist' %}">New Playlist</a>
+                        </div>
+                    </li>
+                {% endif %}
             </ul>
         </nav>
 
